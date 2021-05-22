@@ -1,9 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const dotenv = require('dotenv');
 
 
 const app = express();
+
+dotenv.config();
 
 const userRouter = require("./routes/users");
 
@@ -12,7 +15,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(bodyParser.json());
 
 
-mongoose.connect("mongodb://localhost/test", {
+mongoose.connect(process.env.uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false ,
