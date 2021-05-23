@@ -88,13 +88,26 @@ router.post("/api/users/me", verifyToken, (req, res) => {
   });
 
 router.post("/api/login", async (req, res) => {
-   const { username} = req.body
-   const user = await User.findOne({ username }).lean()
-    
-   jwt.sign({ user: user }, "secretkey", (err, token) => {
-        res.json({token});
-    });
+  
+   const { email, password} = req.body
+   const user = await User.findOne({ email }).lean()
+   if (!user) {
+		return res.json({ status: 'error', error: 'Invalid email/password' })
+	}
+
+	if (await bcrypt.compare(password, user.password)) {
+		// the username, password combination is successful
+
+		jwt.sign({ user: user }, "secretkey", (err, token) => {
+      res.json({token});
+  });
+
+		return res.json({ status: 'ok', data: token })
+	}
+
+	res.json({ status: 'error', error: 'Invalid email/password' })
 })
+
 
 function verifyToken(req, res, next) {
     
