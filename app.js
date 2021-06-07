@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const dotenv = require('dotenv');
+const cron = require("node-cron");
 
 
 const app = express();
@@ -9,6 +10,7 @@ const app = express();
 dotenv.config();
 
 const userRouter = require("./routes/users");
+const scheduler  = require("./scheduler")
 
 app.use(express.urlencoded({ extended: true }))
 
