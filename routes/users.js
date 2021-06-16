@@ -24,9 +24,17 @@ router.get("/",(req,res)=>{
   res.send("<form action='/user' method='post'><input type='text' name='username' placeholder='username'><input type='text' name='email' placeholder='email'><input type='text' name='password' placeholder='password'><button type='submit'>save</button></form>");
 })
 
+
+router.post('/usersList', async function(req, res) {
+  const searchitem = req.query.search;
+  console.log(searchitem);
+   const result = await User.find({ $text : { $search : searchitem }} )
+   return res.json(result);
+  
+});
+
 router.post("/user", async (req,res)=>{
     const { username, email , password: plainTextPassword } = req.body
-  
     if (!username || typeof username !== 'string') {
       return res.json({ status: 'error', error: 'Invalid username' })
     }
@@ -107,6 +115,7 @@ router.post("/api/login", async (req, res) => {
 
 	res.json({ status: 'error', error: 'Invalid email/password' })
 })
+
 
 
 function verifyToken(req, res, next) {
