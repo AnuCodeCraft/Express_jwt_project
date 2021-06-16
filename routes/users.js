@@ -27,9 +27,22 @@ router.get("/",(req,res)=>{
 
 router.post('/usersList', async function(req, res) {
   const searchitem = req.query.search;
-  console.log(searchitem);
-   const result = await User.find({ $text : { $search : searchitem }} )
-   return res.json(result);
+  
+  const result = await User.find({ $text : { $search : searchitem }},
+    { score : {$meta : "textScore"}}
+   ).sort( 
+      {  score: { $meta : 'textScore' } }
+  )
+  
+console.log(result);
+
+  if(result[0] == undefined){
+    const result1 = await User.find({username:{$regex: searchitem , $options: '$i' }} )
+    return res.json(result1)
+  }
+  else{
+    return res.json(result)
+  }
   
 });
 
